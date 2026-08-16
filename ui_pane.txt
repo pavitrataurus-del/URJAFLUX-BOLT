@@ -1,0 +1,131 @@
+                    <label className="text-[9px] text-slate-500 uppercase block font-bold">Vastu Engine Node</label>
+                    <div className="w-full bg-emerald-500/10 border border-emerald-500/20 rounded p-1.5 text-xs text-emerald-400 font-bold">
+                      Vastu Direction Chakra
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-[9px] text-slate-500 uppercase block leading-none">Position X (px)</label>
+                      <input
+                        type="number"
+                        value={Math.round(chakraState.x)}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value) || 0;
+                          setChakraState(prev => ({ ...prev, x: Math.max(0, Math.min(bgImageSize.width, val)) }));
+                        }}
+                        className="w-full bg-slate-900 border border-slate-800 rounded p-1.5 text-[11px] text-slate-200 mt-1 focus:outline-none focus:border-emerald-500/50"
+                        disabled={chakraState.isLocked}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[9px] text-slate-500 uppercase block leading-none">Position Y (px)</label>
+                      <input
+                        type="number"
+                        value={Math.round(chakraState.y)}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value) || 0;
+                          setChakraState(prev => ({ ...prev, y: Math.max(0, Math.min(bgImageSize.height, val)) }));
+                        }}
+                        className="w-full bg-slate-900 border border-slate-800 rounded p-1.5 text-[11px] text-slate-200 mt-1 focus:outline-none focus:border-emerald-500/50"
+                        disabled={chakraState.isLocked}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between items-center text-[9px]">
+                      <span className="text-slate-500 uppercase">Vector Rotation</span>
+                      <span className="text-slate-300 font-bold">{chakraState.rotation}°</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="359"
+                      value={chakraState.rotation}
+                      onChange={(e) => setChakraState(prev => ({ ...prev, rotation: parseInt(e.target.value) }))}
+                      className="w-full cursor-pointer accent-emerald-500"
+                      disabled={chakraState.isLocked}
+                    />
+                    <div className="flex gap-2 mt-2">
+                      <button 
+                        onClick={() => {
+                          if (chakraState.isLocked) return;
+                          setChakraState(prev => ({ ...prev, rotation: compassRotation || 0 }));
+                        }}
+                        className="flex-1 text-[9px] bg-slate-900 border border-slate-800 text-slate-300 py-1 rounded hover:text-slate-100 transition-colors font-bold uppercase cursor-pointer"
+                        disabled={chakraState.isLocked}
+                      >
+                        Snap North
+                      </button>
+                      <button 
+                        onClick={() => {
+                          if (chakraState.isLocked) return;
+                          setChakraState(prev => ({ ...prev, rotation: 0 }));
+                        }}
+                        className="flex-1 text-[9px] bg-slate-900 border border-slate-800 text-slate-300 py-1 rounded hover:text-slate-100 transition-colors font-bold uppercase cursor-pointer"
+                        disabled={chakraState.isLocked}
+                      >
+                        Reset
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between items-center text-[9px]">
+                      <span className="text-slate-500 uppercase">Scale (Resize)</span>
+                      <span className="text-slate-300 font-bold">{chakraState.scale.toFixed(2)}x</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0.1"
+                      max="5.0"
+                      step="0.05"
+                      value={chakraState.scale}
+                      onChange={(e) => setChakraState(prev => ({ ...prev, scale: parseFloat(e.target.value) }))}
+                      className="w-full cursor-pointer accent-emerald-500"
+                      disabled={chakraState.isLocked}
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between items-center text-[9px]">
+                      <span className="text-slate-500 uppercase">Master Opacity</span>
+                      <span className="text-slate-300 font-bold">{Math.round(chakraState.opacity * 100)}%</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0.1"
+                      max="1.0"
+                      step="0.05"
+                      value={chakraState.opacity}
+                      onChange={(e) => setChakraState(prev => ({ ...prev, opacity: parseFloat(e.target.value) }))}
+                      className="w-full cursor-pointer accent-emerald-500"
+                    />
+                  </div>
+
+                  <div className="space-y-2 pt-2 border-t border-slate-900">
+                    <label className="flex items-center gap-2 cursor-pointer text-slate-400 hover:text-slate-200">
+                      <input 
+                        type="checkbox" 
+                        checked={chakraState.isLocked}
+                        onChange={(e) => setChakraState(prev => ({ ...prev, isLocked: e.target.checked }))}
+                        className="accent-emerald-500"
+                      />
+                      <span className="text-[10px] font-bold uppercase font-mono">Locked</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer text-slate-400 hover:text-slate-200">
+                      <input 
+                        type="checkbox" 
+                        checked={chakraState.snapEnabled}
+                        onChange={(e) => setChakraState(prev => ({ ...prev, snapEnabled: e.target.checked }))}
+                        className="accent-emerald-500"
+                      />
+                      <span className="text-[10px] font-bold uppercase font-mono">Snap Enabled</span>
+                    </label>
+                  </div>
+                  
+                  <div className="flex justify-between text-[10px] text-slate-500 border-t border-slate-900 pt-2">
+                    <span className="uppercase">North Offset</span>
+                    <span className="font-mono font-bold text-slate-300">{(((chakraState.rotation - (compassRotation || 0)) % 360 + 360) % 360)}°</span>
+                  </div>

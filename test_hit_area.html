@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.absolute { position: absolute; }
+.rounded-full { border-radius: 9999px; }
+</style>
+</head>
+<body>
+<div style="position: relative; width: 800px; height: 800px; background: #eee;">
+  <div class="absolute" style="left: 400px; top: 400px; width: 0px; height: 0px; background: red;">
+    <div class="absolute" style="transform: translate(-50%, -50%) rotate(0deg); width: 0px; height: 0px;">
+      
+      <!-- HIT AREA -->
+      <div class="absolute rounded-full" style="left: 0px; top: 0px; width: 420px; height: 420px; transform: translate(-50%, -50%); background: rgba(0,255,0,0.5);">
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,269 @@
+  const VastuChakraSVGOverlay = ({ className }: { className?: string }) => {
+    return (
+      <div 
+        className={`${className} absolute flex items-center justify-center`}
+        style={{ width: "0px", height: "0px" }}
+      >
+        {(layers.directionChakra || layers.zones16 || layers.entrances32 || layers.devta45 || layers.panchatattva) && (
+          <>
+            {/* 1. PANCHATATTVA ELEMENT LAYER */}
+            {layers.panchatattva && (
+              <svg className="absolute pointer-events-none" width="1200" height="1200" viewBox="0 0 1200 1200" style={{ transform: "translate(-600px, -600px)", opacity: layerConfigs.panchatattva.opacity }}>
+                {/* Water Element (NNW to NE: 337.5 to 67.5) */}
+                <path d={getSectorPath(600, 600, 360, 337.5, 67.5)} fill="rgba(14, 165, 233, 0.07)" stroke="rgba(14, 165, 233, 0.18)" strokeWidth="1.2" strokeDasharray="3,3" />
+                {/* Air Element (ENE to E: 67.5 to 112.5) */}
+                <path d={getSectorPath(600, 600, 360, 67.5, 112.5)} fill="rgba(34, 197, 94, 0.07)" stroke="rgba(34, 197, 94, 0.18)" strokeWidth="1.2" strokeDasharray="3,3" />
+                {/* Fire Element (ESE to SSE: 112.5 to 180) */}
+                <path d={getSectorPath(600, 600, 360, 112.5, 180)} fill="rgba(239, 68, 68, 0.07)" stroke="rgba(239, 68, 68, 0.18)" strokeWidth="1.2" strokeDasharray="3,3" />
+                {/* Earth Element (S to SW: 180 to 247.5) */}
+                <path d={getSectorPath(600, 600, 360, 180, 247.5)} fill="rgba(234, 179, 8, 0.07)" stroke="rgba(234, 179, 8, 0.18)" strokeWidth="1.2" strokeDasharray="3,3" />
+                {/* Space Element (WSW to NW: 247.5 to 337.5) */}
+                <path d={getSectorPath(600, 600, 360, 247.5, 337.5)} fill="rgba(168, 85, 247, 0.07)" stroke="rgba(168, 85, 247, 0.18)" strokeWidth="1.2" strokeDasharray="3,3" />
+                
+                {/* Element labels centered in each quadrant */}
+                {(() => {
+                  const labels = [
+                    { text: "WATER", angle: 2.5, fill: "#38bdf8" },
+                    { text: "AIR", angle: 90, fill: "#4ade80" },
+                    { text: "FIRE", angle: 146.25, fill: "#f87171" },
+                    { text: "EARTH", angle: 213.75, fill: "#facc15" },
+                    { text: "SPACE", angle: 292.5, fill: "#c084fc" }
+                  ];
+                  return labels.map(lbl => {
+                    const pt = polarToCartesian(600, 600, 210, lbl.angle);
+                    return (
+                      <g key={lbl.text}>
+                        <rect x={pt.x - 30} y={pt.y - 10} width="60" height="20" rx="4" fill="#060a13" stroke={lbl.fill} strokeWidth="1" opacity="0.95" />
+                        <text x={pt.x} y={pt.y + 4.5} fill={lbl.fill} fontSize="9px" fontFamily="monospace" fontWeight="black" textAnchor="middle" letterSpacing="1px">{lbl.text}</text>
+                      </g>
+                    );
+                  });
+                })()}
+              </svg>
+            )}
+
+            {/* 2. 16 ZONES GRID */}
+            {layers.zones16 && (
+              <svg className="absolute pointer-events-none" width="1200" height="1200" viewBox="0 0 1200 1200" style={{ transform: "translate(-600px, -600px)", opacity: layerConfigs.zones16.opacity }}>
+                {[0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5, 180, 202.5, 225, 247.5, 270, 292.5, 315, 337.5].map((angle) => {
+                  const pt = polarToCartesian(600, 600, 420, angle);
+                  return (
+                    <line
+                      key={angle}
+                      x1="600"
+                      y1="600"
+                      x2={pt.x}
+                      y2={pt.y}
+                      stroke="rgba(16, 185, 129, 0.25)"
+                      strokeWidth="1"
+                      strokeDasharray="4,2"
+                    />
+                  );
+                })}
+
+                <circle cx="600" cy="600" r="360" fill="none" stroke="rgba(16, 185, 129, 0.18)" strokeWidth="0.75" />
+                <circle cx="600" cy="600" r="210" fill="none" stroke="rgba(16, 185, 129, 0.12)" strokeWidth="0.75" strokeDasharray="2,2" />
+                <circle cx="600" cy="600" r="420" fill="none" stroke="rgba(16, 185, 129, 0.18)" strokeWidth="0.75" strokeDasharray="3,3" />
+
+                {defaultZoneEngine.getZones().filter(z => z.id !== "Center").map((zone) => {
+                  const angle = (zone.startAngle + zone.endAngle) / 2;
+                  const pt = polarToCartesian(600, 600, 260, angle);
+                  return (
+                    <g key={zone.id}>
+                      <rect x={pt.x - 20} y={pt.y - 8} width="40" height="16" rx="3" fill="#060a13" stroke="rgba(16, 185, 129, 0.45)" strokeWidth="1" />
+                      <text
+                        x={pt.x}
+                        y={pt.y + 4}
+                        fill="#cbd5e1"
+                        fontSize="9px"
+                        fontFamily="monospace"
+                        fontWeight="900"
+                        textAnchor="middle"
+                        letterSpacing="0.5px"
+                      >
+                        {zone.id}
+                      </text>
+                    </g>
+                  );
+                })}
+              </svg>
+            )}
+
+            {/* 3. VASTU DIRECTION CHAKRA */}
+            {layers.directionChakra && (
+              <svg className="absolute pointer-events-none" width="1200" height="1200" viewBox="0 0 1200 1200" style={{ transform: "translate(-600px, -600px)", opacity: layerConfigs.directionChakra.opacity }}>
+                <line x1="600" y1="180" x2="600" y2="1020" stroke="rgba(239, 68, 68, 0.5)" strokeWidth="2" />
+                <line x1="180" y1="600" x2="1020" y2="600" stroke="rgba(16, 185, 129, 0.5)" strokeWidth="1.8" />
+                <line x1="303" y1="303" x2="897" y2="897" stroke="rgba(234, 179, 8, 0.4)" strokeWidth="1.2" strokeDasharray="6,4" />
+                <line x1="303" y1="897" x2="897" y2="303" stroke="rgba(168, 85, 247, 0.4)" strokeWidth="1.2" strokeDasharray="6,4" />
+
+                <circle cx="600" cy="600" r="420" fill="none" stroke="rgba(226, 232, 240, 0.3)" strokeWidth="2.5" />
+                <circle cx="600" cy="600" r="411" fill="none" stroke="rgba(226, 232, 240, 0.1)" strokeWidth="0.75" />
+                <circle cx="600" cy="600" r="150" fill="none" stroke="rgba(226, 232, 240, 0.2)" strokeWidth="1.5" />
+                
+                <polygon points="600,135 588,180 600,171 612,180" fill="rgba(239, 68, 68, 0.95)" stroke="rgba(239, 68, 68, 1)" strokeWidth="1.2" />
+                <polygon points="600,1065 588,1020 600,1029 612,1020" fill="rgba(249, 115, 22, 0.85)" stroke="rgba(249, 115, 22, 1)" strokeWidth="1.2" />
+                <polygon points="1065,600 1020,588 1029,600 1020,612" fill="rgba(34, 197, 94, 0.85)" stroke="rgba(34, 197, 94, 1)" strokeWidth="1.2" />
+                <polygon points="135,600 180,588 171,600 180,612" fill="rgba(168, 85, 247, 0.85)" stroke="rgba(168, 85, 247, 1)" strokeWidth="1.2" />
+
+                {(() => {
+                  const compassDirs = [
+                    { label: "N", angle: 0, fill: "#ef4444", fontSize: "16px", bold: true },
+                    { label: "NE", angle: 45, fill: "#38bdf8", fontSize: "12px" },
+                    { label: "E", angle: 90, fill: "#22c55e", fontSize: "14px", bold: true },
+                    { label: "SE", angle: 135, fill: "#f87171", fontSize: "12px" },
+                    { label: "S", angle: 180, fill: "#f97316", fontSize: "14px", bold: true },
+                    { label: "SW", angle: 225, fill: "#eab308", fontSize: "12px" },
+                    { label: "W", angle: 270, fill: "#a855f7", fontSize: "14px", bold: true },
+                    { label: "NW", angle: 315, fill: "#cbd5e1", fontSize: "12px" }
+                  ];
+                  return compassDirs.map(dir => {
+                    const pt = polarToCartesian(600, 600, 390, dir.angle);
+                    return (
+                      <g key={dir.label}>
+                        <circle cx={pt.x} cy={pt.y} r={dir.bold ? "15" : "12"} fill="#060a13" stroke={dir.fill} strokeWidth="1.25" />
+                        <text
+                          x={pt.x}
+                          y={pt.y + (dir.bold ? 5 : 4)}
+                          fill={dir.fill}
+                          fontSize={dir.fontSize}
+                          fontFamily="monospace"
+                          fontWeight="900"
+                          textAnchor="middle"
+                        >
+                          {dir.label}
+                        </text>
+                      </g>
+                    );
+                  });
+                })()}
+              </svg>
+            )}
+
+            {/* 4. 32 ENTRANCES GRID */}
+            {layers.entrances32 && (
+              <svg className="absolute pointer-events-none" width="1200" height="1200" viewBox="0 0 1200 1200" style={{ transform: "translate(-600px, -600px)", opacity: layerConfigs.entrances32.opacity }}>
+                <circle cx="600" cy="600" r="352" fill="none" stroke="rgba(226, 232, 240, 0.22)" strokeWidth="1.2" />
+                <circle cx="600" cy="600" r="322" fill="none" stroke="rgba(226, 232, 240, 0.22)" strokeWidth="1.2" />
+                
+                {Array.from({ length: 32 }).map((_, i) => {
+                  const startAngle = 315 + i * 11.25;
+                  const dividerPtStart = polarToCartesian(600, 600, 322, startAngle);
+                  const dividerPtEnd = polarToCartesian(600, 600, 352, startAngle);
+                  return (
+                    <line
+                      key={`ent-div-${i}`}
+                      x1={dividerPtStart.x}
+                      y1={dividerPtStart.y}
+                      x2={dividerPtEnd.x}
+                      y2={dividerPtEnd.y}
+                      stroke="rgba(226, 232, 240, 0.22)"
+                      strokeWidth="1"
+                    />
+                  );
+                })}
+
+                {(() => {
+                  const ENTRANCES_32 = [
+                    { code: "N1", angle: 331.875, positive: false },
+                    { code: "N2", angle: 343.125, positive: false },
+                    { code: "N3", angle: 354.375, positive: true },
+                    { code: "N4", angle: 5.625, positive: true },
+                    { code: "N5", angle: 16.875, positive: false },
+                    { code: "N6", angle: 28.125, positive: true },
+                    { code: "N7", angle: 39.375, positive: true },
+                    { code: "N8", angle: 50.625, positive: false },
+                    { code: "E1", angle: 61.875, positive: false },
+                    { code: "E2", angle: 73.125, positive: false },
+                    { code: "E3", angle: 84.375, positive: true },
+                    { code: "E4", angle: 95.625, positive: true },
+                    { code: "E5", angle: 106.875, positive: false },
+                    { code: "E6", angle: 118.125, positive: false },
+                    { code: "E7", angle: 129.375, positive: false },
+                    { code: "E8", angle: 140.625, positive: false },
+                    { code: "S1", angle: 151.875, positive: false },
+                    { code: "S2", angle: 163.125, positive: false },
+                    { code: "S3", angle: 174.375, positive: true },
+                    { code: "S4", angle: 185.625, positive: true },
+                    { code: "S5", angle: 196.875, positive: false },
+                    { code: "S6", angle: 208.125, positive: false },
+                    { code: "S7", angle: 219.375, positive: false },
+                    { code: "S8", angle: 230.625, positive: false },
+                    { code: "W1", angle: 241.875, positive: false },
+                    { code: "W2", angle: 253.125, positive: false },
+                    { code: "W3", angle: 264.375, positive: true },
+                    { code: "W4", angle: 275.625, positive: true },
+                    { code: "W5", angle: 286.875, positive: false },
+                    { code: "W6", angle: 298.125, positive: false },
+                    { code: "W7", angle: 309.375, positive: false },
+                    { code: "W8", angle: 320.625, positive: false },
+                  ];
+                  return ENTRANCES_32.map(ent => {
+                    const pt = polarToCartesian(600, 600, 337, ent.angle);
+                    const color = ent.positive ? "#10b981" : "rgba(226, 232, 240, 0.4)";
+                    return (
+                      <g key={ent.code}>
+                        <text
+                          x={pt.x}
+                          y={pt.y + 3}
+                          fill={color}
+                          fontSize="8px"
+                          fontFamily="monospace"
+                          fontWeight="bold"
+                          textAnchor="middle"
+                        >
+                          {ent.code}
+                        </text>
+                      </g>
+                    );
+                  });
+                })()}
+              </svg>
+            )}
+
+            {/* 5. 45 DEVTA GRID */}
+            {layers.devta45 && (
+              <svg className="absolute pointer-events-none" width="1200" height="1200" viewBox="0 0 1200 1200" style={{ transform: "translate(-600px, -600px)", opacity: layerConfigs.devta45.opacity }}>
+                <circle cx="600" cy="600" r="195" fill="none" stroke="rgba(234, 179, 8, 0.15)" strokeWidth="0.5" strokeDasharray="1,2" />
+                <circle cx="600" cy="600" r="292" fill="none" stroke="rgba(234, 179, 8, 0.15)" strokeWidth="0.5" strokeDasharray="1,2" />
+                <circle cx="600" cy="600" r="90" fill="none" stroke="rgba(234, 179, 8, 0.22)" strokeWidth="1" />
+
+                <text x="600" y="603" fill="rgba(234, 179, 8, 0.85)" fontSize="9px" fontFamily="monospace" fontWeight="950" textAnchor="middle" letterSpacing="0.5px">BRAHMA</text>
+                
+                {(() => {
+                  const INNER_DEITIES = [
+                    { name: "Aryama", angle: 90, radius: 142 },
+                    { name: "Vivasvan", angle: 180, radius: 142 },
+                    { name: "Mitra", angle: 270, radius: 142 },
+                    { name: "Bhudhar", angle: 0, radius: 142 },
+                    { name: "Aap", angle: 30, radius: 240 },
+                    { name: "Savitra", angle: 120, radius: 240 },
+                    { name: "Indra", angle: 210, radius: 240 },
+                    { name: "Rudra", angle: 300, radius: 240 }
+                  ];
+                  return INNER_DEITIES.map(d => {
+                    const pt = polarToCartesian(600, 600, d.radius, d.angle);
+                    return (
+                      <text
+                        key={d.name}
+                        x={pt.x}
+                        y={pt.y + 2.5}
+                        fill="rgba(234, 179, 8, 0.55)"
+                        fontSize="8px"
+                        fontFamily="monospace"
+                        textAnchor="middle"
+                      >
+                        {d.name.toUpperCase()}
+                      </text>
+                    );
+                  });
+                })()}
+
+                {(() => {
+                  const OUTER_DEITIES = [
+                    { name: "Shikhi", angle: 337.5 },
+                    { name: "Surya", angle: 101.25 },
+                    { name: "Yama", angle: 191.25 },
+                    { name: "Varuna", angle: 281.25 },
+                    { name: "Jayanta", angle: 78.75 },
+                    { name: "Soma", angle: 33.75 },

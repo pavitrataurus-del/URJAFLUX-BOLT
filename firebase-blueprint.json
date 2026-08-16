@@ -1,0 +1,264 @@
+{
+  "firestore": {
+    "collections": {
+      "clients": {
+        "description": "Collection of corporate agencies, institutes, and individual property owners registered in the URJAFLUX AI OS.",
+        "schema": {
+          "id": "string (Matches document ID exactly)",
+          "name": "string",
+          "email": "string",
+          "phone": "string",
+          "company": "string",
+          "status": "string ('Active' | 'Pending' | 'Inactive')",
+          "joinedDate": "string (YYYY-MM-DD)",
+          "address": "string",
+          "avatarUrl": "string"
+        },
+        "indexes": [],
+        "rules": [
+          "allow read, write: if true;"
+        ]
+      },
+      "properties": {
+        "description": "Collection of physical properties and real estate assets analyzed in the URJAFLUX AI OS.",
+        "schema": {
+          "id": "string (Matches document ID exactly)",
+          "name": "string",
+          "ownerId": "string",
+          "ownerName": "string",
+          "address": "string",
+          "plotSize": "string",
+          "floors": "number",
+          "constructionStatus": "string ('Planned' | 'Under Construction' | 'Completed')",
+          "consultationStatus": "string ('Pending' | 'In Progress' | 'Remedied' | 'Verified')",
+          "energyRating": "number",
+          "floorplanUrl": "string",
+          "directionsOffset": "number"
+        },
+        "indexes": [],
+        "rules": [
+          "allow read, write: if true;"
+        ]
+      },
+      "projects": {
+        "description": "Collection of consultant projects assigned to analyze specific properties.",
+        "schema": {
+          "id": "string",
+          "name": "string",
+          "code": "string",
+          "propertyId": "string",
+          "propertyName": "string",
+          "clientId": "string",
+          "clientName": "string",
+          "projectType": "string",
+          "status": "string",
+          "priority": "string",
+          "createdDate": "string",
+          "lastUpdated": "string",
+          "assignedConsultant": "string"
+        },
+        "indexes": [],
+        "rules": [
+          "allow read, write: if true;"
+        ]
+      },
+      "workspaces": {
+        "description": "Interactive layout alignment, calibration step parameters, object pins, and annotations for Vastu/energy analysis.",
+        "schema": {
+          "id": "string (Matches projectId exactly)",
+          "projectId": "string",
+          "floorPlanImage": "object",
+          "northAngle": "number",
+          "scale": "string",
+          "canvasZoom": "number",
+          "canvasOffset": "object",
+          "layers": "object",
+          "objects": "array",
+          "measurements": "array",
+          "photos": "array",
+          "notes": "string",
+          "lastUpdated": "string",
+          "annotations": "array",
+          "annotationLayers": "object",
+          "annotationZoom": "number",
+          "annotationPan": "object",
+          "annotationMeasurePoints": "array"
+        },
+        "indexes": [],
+        "rules": [
+          "allow read, write: if true;"
+        ]
+      },
+      "reports": {
+        "description": "Collection of spatial audit and compliance reports generated for properties.",
+        "schema": {
+          "id": "string (Matches document ID exactly)",
+          "title": "string",
+          "propertyId": "string",
+          "propertyName": "string",
+          "clientId": "string",
+          "clientName": "string",
+          "dateCreated": "string (YYYY-MM-DD)",
+          "remedies": "array",
+          "summaryRating": "number",
+          "consultantNotes": "string",
+          "status": "string ('Draft' | 'Approved' | 'Sent')"
+        },
+        "indexes": [],
+        "rules": [
+          "allow read, write: if true;"
+        ]
+      },
+      "workspace_digital_twins": {
+        "description": "Store drawing metadata and version history for project workspaces.",
+        "schema": {
+          "id": "string (Matches workspace ID/project ID exactly)",
+          "workspaceId": "string",
+          "drawings": "array (List of WorkspaceDigitalTwinDrawing objects)"
+        },
+        "indexes": [],
+        "rules": [
+          "allow read, write: if true;"
+        ]
+      },
+      "knowledge_documents": {
+        "description": "Permanent store for uploaded knowledge books, PDFs, documents, OCR extracts, and metadata.",
+        "schema": {
+          "id": "string",
+          "title": "string",
+          "originalName": "string",
+          "fileType": "string",
+          "sizeBytes": "number",
+          "fileUrl": "string",
+          "status": "string ('UPLOADED' | 'OCR_PROCESSING' | 'TEXT_EXTRACTED' | 'RULE_EXTRACTION' | 'PENDING_REVIEW' | 'APPROVED' | 'ACTIVE' | 'ARCHIVED')",
+          "ocrText": "string",
+          "totalPages": "number",
+          "author": "string",
+          "uploadedAt": "string",
+          "updatedAt": "string",
+          "version": "number",
+          "tags": "array",
+          "language": "string"
+        },
+        "indexes": [],
+        "rules": [
+          "allow read, write: if true;"
+        ]
+      },
+      "knowledge_chunks": {
+        "description": "Text chunks and page breakdown extracted from uploaded documents.",
+        "schema": {
+          "id": "string",
+          "documentId": "string",
+          "pageNumber": "number",
+          "text": "string",
+          "blockType": "string",
+          "confidence": "number"
+        },
+        "indexes": [],
+        "rules": [
+          "allow read, write: if true;"
+        ]
+      },
+      "knowledge_rules": {
+        "description": "Structured Vastu & Ayadi rules extracted from books requiring human approval.",
+        "schema": {
+          "id": "string",
+          "documentId": "string",
+          "category": "string",
+          "condition": "string",
+          "recommendation": "string",
+          "severity": "string ('CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW' | 'INFO')",
+          "confidence": "number",
+          "applicableObjects": "array",
+          "createdDate": "string",
+          "updatedDate": "string",
+          "approvalStatus": "string ('PENDING' | 'APPROVED' | 'REJECTED')",
+          "version": "string",
+          "revisionNumber": "number"
+        },
+        "indexes": [],
+        "rules": [
+          "allow read, write: if true;"
+        ]
+      },
+      "knowledge_categories": {
+        "description": "Categories for grouping Vastu, Ayadi, Devta, and architectural knowledge.",
+        "schema": {
+          "id": "string",
+          "name": "string",
+          "description": "string",
+          "ruleCount": "number",
+          "activeRuleCount": "number"
+        },
+        "indexes": [],
+        "rules": [
+          "allow read, write: if true;"
+        ]
+      },
+      "knowledge_versions": {
+        "description": "Revision logs and version history for documents and rule packs.",
+        "schema": {
+          "id": "string",
+          "entityType": "string",
+          "entityId": "string",
+          "versionNumber": "number",
+          "changeSummary": "string",
+          "snapshotData": "object",
+          "timestamp": "string"
+        },
+        "indexes": [],
+        "rules": [
+          "allow read, write: if true;"
+        ]
+      },
+      "knowledge_embeddings": {
+        "description": "Semantic search embeddings and keyword search indexes for knowledge items.",
+        "schema": {
+          "id": "string",
+          "ruleOrDocId": "string",
+          "keywords": "array",
+          "vector": "array",
+          "textContent": "string"
+        },
+        "indexes": [],
+        "rules": [
+          "allow read, write: if true;"
+        ]
+      },
+      "knowledge_metadata": {
+        "description": "Overall Knowledge Vault statistics, health metrics, and storage stats.",
+        "schema": {
+          "id": "string",
+          "totalDocuments": "number",
+          "approvedRules": "number",
+          "pendingRules": "number",
+          "activeRules": "number",
+          "storageUsageBytes": "number",
+          "latestUploadAt": "string",
+          "latestApprovalAt": "string",
+          "healthStatus": "string"
+        },
+        "indexes": [],
+        "rules": [
+          "allow read, write: if true;"
+        ]
+      },
+      "knowledge_backups": {
+        "description": "Complete Knowledge Vault backups and snapshots for disaster recovery.",
+        "schema": {
+          "id": "string",
+          "timestamp": "string",
+          "backupName": "string",
+          "documentCount": "number",
+          "ruleCount": "number",
+          "fullJsonData": "string"
+        },
+        "indexes": [],
+        "rules": [
+          "allow read, write: if true;"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  urjaflux-ai-os:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: urjaflux-ai-os-rc1
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - JWT_SECRET=urjaflux_enterprise_jwt_secret_key_2026_prod
+      - JWT_REFRESH_SECRET=urjaflux_enterprise_refresh_secret_key_2026_prod
+      - VITE_FIREBASE_PROJECT_ID=urjaflux-ai-os
+      - VITE_FIREBASE_DATABASE_ID=remixed-firestore-database-id
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:3000/live"]
+      interval: 15s
+      timeout: 5s
+      retries: 3

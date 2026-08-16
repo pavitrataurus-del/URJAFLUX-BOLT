@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Clients Collection
+    match /clients/{document} {
+      allow read, write: if true;
+    }
+
+    // Properties Collection
+    match /properties/{document} {
+      allow read, write: if true;
+    }
+
+    // Projects Collection
+    match /projects/{document} {
+      allow read, write: if true;
+    }
+
+    // Workspaces Collection
+    match /workspaces/{document} {
+      allow read, write: if true;
+    }
+
+    // Reports Collection
+    match /reports/{document} {
+      allow read, write: if true;
+    }
+
+    // Workspace Digital Twins Collection
+    match /workspace_digital_twins/{document} {
+      allow read, write: if true;
+    }
+
+    // Knowledge Vault Collections
+    match /knowledge_documents/{document} {
+      allow read, write: if true;
+    }
+    match /knowledge_chunks/{document} {
+      allow read, write: if true;
+    }
+    match /knowledge_rules/{document} {
+      allow read, write: if true;
+    }
+    match /knowledge_categories/{document} {
+      allow read, write: if true;
+    }
+    match /knowledge_versions/{document} {
+      allow read, write: if true;
+    }
+    match /knowledge_embeddings/{document} {
+      allow read, write: if true;
+    }
+    match /knowledge_metadata/{document} {
+      allow read, write: if true;
+    }
+    match /knowledge_backups/{document} {
+      allow read, write: if true;
+    }
+  }
+}

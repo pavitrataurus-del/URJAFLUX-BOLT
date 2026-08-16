@@ -1,0 +1,8 @@
+{
+  "name": "Remix: URJAFLUX AI OS",
+  "description": "Enterprise AI OS Platform (v2.5.0-GA Ready) featuring Production Hardening, High Availability, Security, Compliance (ISO 27001, SOC 2, DPDP, GDPR), Disaster Recovery, Observability, Load Testing, and Spatial Digital Twin Intelligence.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

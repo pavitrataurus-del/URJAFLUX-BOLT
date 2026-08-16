@@ -1,0 +1,261 @@
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleZoomReset();
+                }}
+                className="px-2 h-7 rounded bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 flex items-center justify-center font-mono text-[10px] cursor-pointer"
+                title="Reset View"
+              >
+                Reset
+              </button>
+            </div>
+          )}
+
+          {/* SPRINT 18: SMALL COMPASS HUD IN THE TOP RIGHT CORNER */}
+          {bgImage.url && isVastuChakraActive && layers.compass && (
+            <div className="absolute top-4 right-4 bg-slate-950/95 border border-slate-800 rounded-xl p-3 w-56 text-slate-100 shadow-2xl backdrop-blur-md select-none font-sans z-45 transition-all duration-300">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-1.5 mb-2">
+                <div className="flex items-center gap-1.5">
+                  <Compass className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-200">Compass HUD</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  {chakraState.isLocked ? (
+                    <span className="text-[7px] bg-emerald-500/15 text-emerald-400 px-1 py-0.5 rounded font-black uppercase tracking-widest flex items-center gap-0.5 border border-emerald-500/20">
+                      <Lock className="w-2 h-2" /> LOCKED
+                    </span>
+                  ) : (
+                    <span className="text-[7px] bg-amber-500/15 text-amber-400 px-1 py-0.5 rounded font-black uppercase tracking-widest flex items-center gap-0.5 border border-amber-500/20 animate-pulse">
+                      <Unlock className="w-2 h-2" /> ACTIVE
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Rotatable Compass Rose Center (Slightly smaller, 80px) */}
+              <div className="flex flex-col items-center justify-center py-1">
+                <div 
+                  className={`relative w-20 h-20 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center shadow-inner transition-transform cursor-grab active:cursor-grabbing ${chakraState.isLocked ? "pointer-events-none opacity-60" : ""}`}
+                  onMouseDown={handleCompassRoseMouseDown}
+                  onTouchStart={handleCompassRoseTouchStart}
+                  title={chakraState.isLocked ? "Calibration Locked" : "Click and drag to rotate compass"}
+                >
+                  {/* Compass Outer Ring Scale */}
+                  <div className="absolute inset-0.5 rounded-full border border-slate-800/60" />
+                  
+                  {/* Rotating Inner Rose */}
+                  <div 
+                    className="absolute inset-0 flex items-center justify-center transition-transform duration-75 ease-linear"
+                    style={{ transform: `rotate(${chakraState.rotation}deg)` }}
+                  >
+                    {/* Cardinal Letters */}
+                    <span className="absolute top-0.5 text-[8px] font-black text-rose-500 tracking-wider">N</span>
+                    <span className="absolute right-0.5 text-[7px] font-black text-slate-400">E</span>
+                    <span className="absolute bottom-0.5 text-[7px] font-black text-slate-400">S</span>
+                    <span className="absolute left-0.5 text-[7px] font-black text-slate-400">W</span>
+                    
+                    {/* Dial Crosshairs */}
+                    <div className="absolute w-[1px] h-full bg-slate-800/40" />
+                    <div className="absolute h-[1px] w-full bg-slate-800/40" />
+                    
+                    {/* Beautiful Compass Needle Pointer Vector (Sized 48px) */}
+                    <svg className="w-12 h-12 pointer-events-none drop-shadow-md" viewBox="0 0 100 100">
+                      {/* North Needle (Red) */}
+                      <polygon points="50,15 56,50 50,44" fill="#ef4444" />
+                      <polygon points="50,15 44,50 50,44" fill="#f87171" />
+                      {/* South Needle (Silver) */}
+                      <polygon points="50,85 56,50 50,56" fill="#cbd5e1" />
+                      <polygon points="50,85 44,50 50,56" fill="#94a3b8" />
+                      {/* Center Hub */}
+                      <circle cx="50" cy="50" r="3" fill="#020617" stroke="#ef4444" strokeWidth="1" />
+                    </svg>
+                  </div>
+
+                  {/* Static Outer Reference Indicator */}
+                  <div className="absolute -top-0.5 w-2 h-2 bg-rose-500 clip-triangle" style={{ clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)" }} />
+                </div>
+              </div>
+
+              {/* Precise Angular Outputs */}
+              <div className="grid grid-cols-2 gap-1.5 bg-slate-900/60 p-1.5 rounded-lg border border-slate-800/60 mb-2 text-[9px] font-mono">
+                <div className="flex flex-col border-r border-slate-800/60 pr-1.5">
+                  <span className="text-[7px] text-slate-500 uppercase font-bold tracking-wider">True North</span>
+                  <div className="flex items-baseline gap-0.5 text-slate-200">
+                    <span className="text-xs font-black text-emerald-400">{chakraState.rotation}</span>
+                    <span className="text-[8px]">° DEG</span>
+                  </div>
+                </div>
+                <div className="flex flex-col pl-1.5">
+                  <span className="text-[7px] text-slate-500 uppercase font-bold tracking-wider">Magnetic N</span>
+                  <div className="flex items-baseline gap-0.5 text-slate-400">
+                    <span className="text-xs font-black">{(chakraState.rotation + 4.8).toFixed(1)}</span>
+                    <span className="text-[8px]">° W</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Live slider or micro-increment controls */}
+              <div className="space-y-1 mb-2.5">
+                <div className="flex justify-between items-center text-[9px] font-mono text-slate-400">
+                  <span>Micro Calibration</span>
+                  <span className="text-slate-300 font-bold">{chakraState.rotation}°</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    disabled={chakraState.isLocked}
+                    onClick={() => {
+                      const nextRotation = (chakraState.rotation - 1 + 360) % 360;
+                      setChakraState(prev => ({ ...prev, rotation: nextRotation }));
+                      if (activeProperty && onUpdatePropertyOffset) {
+                        onUpdatePropertyOffset(activeProperty.id, nextRotation);
+                      }
+                    }}
+                    className="w-5 h-5 rounded bg-slate-900 border border-slate-800 hover:bg-slate-800 flex items-center justify-center font-bold text-slate-200 text-xs disabled:opacity-40 disabled:pointer-events-none"
+                    title="-1° Degrees"
+                  >
+                    -
+                  </button>
+                  <input
+                    type="range"
+                    min="0"
+                    max="359"
+                    value={chakraState.rotation}
+                    disabled={chakraState.isLocked}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value) || 0;
+                      setChakraState(prev => ({ ...prev, rotation: val }));
+                      if (activeProperty && onUpdatePropertyOffset) {
+                        onUpdatePropertyOffset(activeProperty.id, val);
+                      }
+                    }}
+                    className="flex-1 accent-emerald-400 h-1 bg-slate-800 rounded appearance-none cursor-pointer disabled:opacity-40"
+                  />
+                  <button
+                    disabled={chakraState.isLocked}
+                    onClick={() => {
+                      const nextRotation = (chakraState.rotation + 1) % 360;
+                      setChakraState(prev => ({ ...prev, rotation: nextRotation }));
+                      if (activeProperty && onUpdatePropertyOffset) {
+                        onUpdatePropertyOffset(activeProperty.id, nextRotation);
+                      }
+                    }}
+                    className="w-5 h-5 rounded bg-slate-900 border border-slate-800 hover:bg-slate-800 flex items-center justify-center font-bold text-slate-200 text-xs disabled:opacity-40 disabled:pointer-events-none"
+                    title="+1° Degrees"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+              {/* Action Buttons: Lock/Unlock & Reset */}
+              <div className="grid grid-cols-2 gap-1.5">
+                <button
+                  onClick={() => setChakraState(prev => ({ ...prev, isLocked: !prev.isLocked }))}
+                  className={`py-1 px-1.5 rounded text-[8px] font-bold uppercase tracking-wider flex items-center justify-center gap-0.5 transition-all cursor-pointer ${
+                    chakraState.isLocked 
+                      ? "bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/30" 
+                      : "bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+                  }`}
+                >
+                  {chakraState.isLocked ? (
+                    <>
+                      <Unlock className="w-2.5 h-2.5" /> Unlock
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="w-2.5 h-2.5" /> Lock North
+                    </>
+                  )}
+                </button>
+                <div className="flex gap-1.5">
+                  <button
+                    onClick={() => {
+                      if (chakraState.isLocked) return;
+                      // Center the chakra in the viewport
+                      const mainEl = document.querySelector('main');
+                      if (mainEl && bgImageSize.width > 0) {
+                        const rect = mainEl.getBoundingClientRect();
+                        const centerX = (rect.width / 2 - pan.x) / zoom;
+                        const centerY = (rect.height / 2 - pan.y) / zoom;
+                        setChakraState(prev => ({ 
+                          ...prev, 
+                          x: Math.max(0, Math.min(bgImageSize.width, centerX)), 
+                          y: Math.max(0, Math.min(bgImageSize.height, centerY))
+                        }));
+                      }
+                      showToast("Chakra re-centered to viewport");
+                    }}
+                    disabled={chakraState.isLocked}
+                    className="flex-1 py-1 px-1.5 rounded text-[8px] font-bold uppercase tracking-wider bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 hover:text-slate-100 flex items-center justify-center transition-all cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
+                    title="Center Chakra in view"
+                  >
+                    Center
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (chakraState.isLocked) return;
+                      setChakraState(prev => ({ ...prev, rotation: 0 }));
+                      if (activeProperty && onUpdatePropertyOffset) {
+                        onUpdatePropertyOffset(activeProperty.id, 0);
+                      }
+                      showToast("Compass orientation calibrated back to True North (0°)");
+                    }}
+                    disabled={chakraState.isLocked}
+                    className="flex-1 py-1 px-1.5 rounded text-[8px] font-bold uppercase tracking-wider bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 hover:text-slate-100 flex items-center justify-center transition-all cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
+                    title="Reset to 0°"
+                  >
+                    0°
+                  </button>
+                </div>
+              </div>
+              
+              <div className="mt-1.5">
+                <button
+                  onClick={() => setChakraState(prev => ({ ...prev, isLocked: !prev.isLocked }))}
+                  className={`w-full py-1.5 px-2 rounded text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    chakraState.isLocked 
+                      ? "bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/30" 
+                      : "bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+                  }`}
+                >
+                  {chakraState.isLocked ? (
+                    <>
+                      <Unlock className="w-3 h-3" /> Unlock Chakra
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="w-3 h-3" /> Lock Chakra
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
+        </main>
+
+        {/* ===================================================
+            4. ANNOTATION INSPECTOR (RIGHT SIDEBAR)
+           =================================================== */}
+        {!isPresentationMode && (
+          <aside 
+            className={`transition-all duration-300 ease-in-out shrink-0 flex flex-col justify-between overflow-y-auto z-30 ${
+              rightPanelPinned 
+                ? "w-80 h-full border-l border-slate-850 bg-[#070b13]" 
+                : "absolute right-4 top-24 bottom-14 rounded-xl border border-slate-800/80 bg-slate-950/95 shadow-2xl overflow-hidden"
+            } ${
+              isRightPanelOpen ? "w-80 p-4 opacity-100" : "w-0 p-0 border-none opacity-0 overflow-hidden"
+            } ${
+              isUserInactive && !leftPanelPinned && !rightPanelPinned ? "opacity-0 pointer-events-none" : "opacity-100"
+            }`}
+          >
+            <div className="space-y-4">
+              
+              <div className="flex items-center justify-between border-b border-slate-800/60 pb-2.5">
+                <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-black uppercase tracking-wider font-mono">
+                  <Settings className="w-4 h-4 animate-spin-slow" />
+                  <span>Element Inspector</span>
+                </div>
+                
+                {/* Pin and Close Buttons */}
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setRightPanelPinned(!rightPanelPinned)}

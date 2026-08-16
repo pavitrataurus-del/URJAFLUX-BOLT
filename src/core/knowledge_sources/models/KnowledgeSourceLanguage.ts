@@ -1,0 +1,17 @@
+export type KnowledgeSourceLanguage =
+  | 'en'
+  | 'sa'
+  | 'hi'
+  | 'ta'
+  | 'te'
+  | 'kn'
+  | 'ml'
+  | 'mr'
+  | 'gu'
+  | 'bn'
+  | 'fr'
+  | 'de'
+  | 'es'
+  | 'zh'
+  | 'ja'
+  | 'UNKNOWN';
